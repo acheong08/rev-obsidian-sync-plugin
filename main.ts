@@ -8,16 +8,16 @@ interceptor.apply();
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
+interface PluginSettings {
 	SyncAPI: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: PluginSettings = {
 	SyncAPI: "https://api.obsidian.md",
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class InterceptorPlugin extends Plugin {
+	settings: PluginSettings;
 	async onload() {
 		interceptor.on("request", async ({ request, requestId }) => {
 			await this.loadSettings();
@@ -48,7 +48,7 @@ export default class MyPlugin extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {}
@@ -66,10 +66,10 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+class SettingsTab extends PluginSettingTab {
+	plugin: InterceptorPlugin;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: InterceptorPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

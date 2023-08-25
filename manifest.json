@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "acheong08.sync.api-interceptor",
+	"name": "Sync API Interceptor",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Allows you to self host the sync API and set the URL in the settings.",
+	"author": "acheong08",
+	"authorUrl": "https://github.com/acheong08",
 	"isDesktopOnly": false
 }
