@@ -81,7 +81,7 @@ class SettingsTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName("Obsidian Sync URL").addText((text) =>
 			text
-				.setPlaceholder(this.plugin.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI)
+				.setPlaceholder(DEFAULT_SETTINGS.SyncAPI)
 				.setValue(this.plugin.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI)
 				.onChange(async (value) => {
 					this.plugin.settings.SyncAPI = value;
