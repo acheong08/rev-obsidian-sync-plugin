@@ -1,5 +1,5 @@
 {
-	"id": "sync-override",
+	"id": "rev-obsidian-sync-plugin",
 	"name": "Custom Native Sync",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
