@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 export default class InterceptorPlugin extends Plugin {
 	settings: PluginSettings;
 	async onload() {
+		await this.loadSettings();
 		interceptor.on("request", async ({ request, requestId }) => {
 			await this.loadSettings();
 			console.log(request.method, request.url);
@@ -79,14 +80,17 @@ class SettingsTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl).setName("Obsidian Sync URL").addText((text) =>
-			text
-				.setPlaceholder(DEFAULT_SETTINGS.SyncAPI)
-				.setValue(this.plugin.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI)
-				.onChange(async (value) => {
-					this.plugin.settings.SyncAPI = value;
-					await this.plugin.saveSettings();
-				})
-		);
+		new Setting(containerEl)
+			.setName("Obsidian Sync URL")
+			.addText((text) => {
+				text.setPlaceholder(DEFAULT_SETTINGS.SyncAPI)
+					.setValue(this.plugin.settings.SyncAPI)
+					.onChange(async (value) => {
+						if (this.plugin.settings) {
+							this.plugin.settings.SyncAPI = value;
+							await this.plugin.saveSettings();
+						}
+					});
+			});
 	}
 }
