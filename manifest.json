@@ -1,7 +1,7 @@
 {
 	"id": "rev-obsidian-sync",
 	"name": "Custom Native Sync",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"minAppVersion": "0.15.0",
 	"description": "Allows you to self host the native sync API and set the URL in the settings. Used with https://github.com/acheong08/rev-obsidian-sync",
 	"author": "acheong08",

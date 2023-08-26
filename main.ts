@@ -1,11 +1,6 @@
 import { App, Plugin, PluginSettingTab, Setting, requestUrl } from "obsidian";
 import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
 
-const interceptor = new XMLHttpRequestInterceptor();
-
-// Enable the interception of requests.
-interceptor.apply();
-
 // Remember to rename these classes and interfaces!
 
 interface PluginSettings {
@@ -18,9 +13,12 @@ const DEFAULT_SETTINGS: PluginSettings = {
 
 export default class InterceptorPlugin extends Plugin {
 	settings: PluginSettings;
+	interceptor: XMLHttpRequestInterceptor;
 	async onload() {
 		await this.loadSettings();
-		interceptor.on("request", async ({ request, requestId }) => {
+		this.interceptor = new XMLHttpRequestInterceptor();
+		this.interceptor.apply();
+		this.interceptor.on("request", async ({ request, requestId }) => {
 			await this.loadSettings();
 			console.log(request.method, request.url);
 			// Replace api url with sync api url
@@ -52,7 +50,9 @@ export default class InterceptorPlugin extends Plugin {
 		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
-	onunload() {}
+	onunload() {
+		this.interceptor.dispose();
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(
