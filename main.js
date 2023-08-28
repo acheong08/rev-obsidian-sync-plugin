@@ -3778,7 +3778,7 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
           body
         });
         response.headers.forEach((_, key) => {
-          if (key != "content-type") {
+          if (key != "content-type" && key != "content-length") {
             request.headers.delete(key);
           }
         });

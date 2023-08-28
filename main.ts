@@ -68,7 +68,7 @@ export default class InterceptorPlugin extends Plugin {
 				});
 				// Remove headers
 				response.headers.forEach((_, key) => {
-					if (key != "content-type") {
+					if (key != "content-type" && key != "content-length") {	
 						request.headers.delete(key);
 					}
 				});
