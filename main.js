@@ -3757,7 +3757,7 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
       console.log(request.method, request.url);
       let url = request.url.replace(
         "https://api.obsidian.md",
-        this.settings.SyncAPI
+        this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
       );
       let reader = (_a2 = request.body) == null ? void 0 : _a2.getReader();
       if (reader) {
