@@ -44,7 +44,7 @@ export default class InterceptorPlugin extends Plugin {
 			// Replace api url with sync api url
 			let url = request.url.replace(
 				"https://api.obsidian.md",
-				this.settings.SyncAPI
+				this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
 			);
 			// The body is a stream. Finish reading it first
 			let reader = request.body?.getReader();
