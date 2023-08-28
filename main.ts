@@ -41,11 +41,21 @@ export default class InterceptorPlugin extends Plugin {
 		this.interceptor.on("request", async ({ request, requestId }) => {
 			await this.loadSettings();
 			console.log(request.method, request.url);
+			let url = request.url;
 			// Replace api url with sync api url
-			let url = request.url.replace(
-				"https://api.obsidian.md",
-				this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
-			);
+			if (request.url.startsWith("https://api.obsidian.md")) {
+				url = request.url.replace(
+					"https://api.obsidian.md",
+					this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
+				);
+			}
+			if (request.url.startsWith("https://publish.obsidian.md")) {
+				url = request.url.replace(
+					"https://publish.obsidian.md",
+					this.settings.SyncAPI || "https://publish.obsidian.md"
+				);
+			}
+
 			// The body is a stream. Finish reading it first
 			let reader = request.body?.getReader();
 			if (reader) {
