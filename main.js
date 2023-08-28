@@ -3755,10 +3755,19 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
       var _a2;
       await this.loadSettings();
       console.log(request.method, request.url);
-      let url = request.url.replace(
-        "https://api.obsidian.md",
-        this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
-      );
+      let url = request.url;
+      if (request.url.startsWith("https://api.obsidian.md")) {
+        url = request.url.replace(
+          "https://api.obsidian.md",
+          this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
+        );
+      }
+      if (request.url.startsWith("https://publish.obsidian.md")) {
+        url = request.url.replace(
+          "https://publish.obsidian.md",
+          this.settings.SyncAPI || "https://publish.obsidian.md"
+        ).replace("https://publish-01.obsidian.md/", this.settings.SyncAPI || "https://publish.obsidian.md/");
+      }
       let reader = (_a2 = request.body) == null ? void 0 : _a2.getReader();
       if (reader) {
         let result = await reader.read();

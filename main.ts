@@ -53,7 +53,7 @@ export default class InterceptorPlugin extends Plugin {
 				url = request.url.replace(
 					"https://publish.obsidian.md",
 					this.settings.SyncAPI || "https://publish.obsidian.md"
-				);
+				).replace("https://publish-01.obsidian.md/", this.settings.SyncAPI || "https://publish.obsidian.md/");
 			}
 
 			// The body is a stream. Finish reading it first
