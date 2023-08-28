@@ -3739,6 +3739,14 @@ var DEFAULT_SETTINGS = {
   SyncAPI: "https://api.obsidian.md"
 };
 var InterceptorPlugin = class extends import_obsidian.Plugin {
+  constructor(app, manifest) {
+    super(app, manifest);
+    const syncInstance = this.getInternalPluginInstance("sync");
+    this.origGetHost = syncInstance.getHost.bind(syncInstance);
+  }
+  getInternalPluginInstance(id) {
+    return this.app.internalPlugins.getPluginById(id).instance;
+  }
   async onload() {
     await this.loadSettings();
     this.interceptor = new XMLHttpRequestInterceptor();
@@ -3768,6 +3776,15 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
         request.respondWith(response);
       }
     });
+    this.getInternalPluginInstance("sync").getHost = () => {
+      let url = this.origGetHost();
+      if (this.settings.SyncAPI && this.settings.SyncAPI.startsWith("http:")) {
+        url = url.replace("wss:", "ws:");
+      }
+      console.log("Websocket URL:", url);
+      return url;
+    };
+    console.log(this.getInternalPluginInstance("sync").getHost.toString());
     this.addSettingTab(new SettingsTab(this.app, this));
   }
   onunload() {

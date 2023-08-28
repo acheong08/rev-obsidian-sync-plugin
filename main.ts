@@ -1,4 +1,10 @@
-import { App, Plugin, PluginSettingTab, Setting, requestUrl } from "obsidian";
+import {
+	App,
+	Plugin,
+	PluginSettingTab,
+	Setting,
+	PluginManifest,
+} from "obsidian";
 import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
 
 // Remember to rename these classes and interfaces!
@@ -14,6 +20,20 @@ const DEFAULT_SETTINGS: PluginSettings = {
 export default class InterceptorPlugin extends Plugin {
 	settings: PluginSettings;
 	interceptor: XMLHttpRequestInterceptor;
+	origGetHost: Function;
+
+	constructor(app: App, manifest: PluginManifest) {
+		super(app, manifest);
+
+		const syncInstance = this.getInternalPluginInstance("sync");
+		this.origGetHost = syncInstance.getHost.bind(syncInstance);
+	}
+
+	getInternalPluginInstance(id: string) {
+		// @ts-ignore: Property 'internalPlugins' does not exist on type 'App'.
+		return this.app.internalPlugins.getPluginById(id).instance;
+	}
+
 	async onload() {
 		await this.loadSettings();
 		this.interceptor = new XMLHttpRequestInterceptor();
@@ -45,6 +65,19 @@ export default class InterceptorPlugin extends Plugin {
 				request.respondWith(response);
 			}
 		});
+		this.getInternalPluginInstance("sync").getHost = () => {
+			let url = this.origGetHost();
+
+			if (
+				this.settings.SyncAPI &&
+				this.settings.SyncAPI.startsWith("http:")
+			) {
+				url = url.replace("wss:", "ws:");
+			}
+			console.log("Websocket URL:", url);
+
+			return url;
+		};
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingsTab(this.app, this));
