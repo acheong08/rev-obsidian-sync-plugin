@@ -3766,7 +3766,7 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
         url = request.url.replace(
           "https://publish.obsidian.md",
           this.settings.SyncAPI || "https://publish.obsidian.md"
-        ).replace("https://publish-01.obsidian.md/", this.settings.SyncAPI || "https://publish.obsidian.md/");
+        );
       }
       let reader = (_a2 = request.body) == null ? void 0 : _a2.getReader();
       if (reader) {
