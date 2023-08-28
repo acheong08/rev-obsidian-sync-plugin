@@ -3784,7 +3784,6 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
       console.log("Websocket URL:", url);
       return url;
     };
-    console.log(this.getInternalPluginInstance("sync").getHost.toString());
     this.addSettingTab(new SettingsTab(this.app, this));
   }
   onunload() {
