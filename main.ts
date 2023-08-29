@@ -77,13 +77,14 @@ export default class InterceptorPlugin extends Plugin {
 		});
 		this.getInternalPluginInstance("sync").getHost = () => {
 			let url = this.origGetHost();
+			const syncAPI = this.settings.SyncAPI;
 
-			if (
-				this.settings.SyncAPI &&
-				this.settings.SyncAPI.startsWith("http:")
-			) {
-				url = url.replace("wss:", "ws:");
+			if(syncAPI) {
+				const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
+				const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
+				url = `${scheme}://${syncAPIWithoutScheme}/ws`;
 			}
+
 			console.log("Websocket URL:", url);
 
 			return url;
