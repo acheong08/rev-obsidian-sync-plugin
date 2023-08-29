@@ -11,6 +11,9 @@ Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 - Go to community plugins
 - Enable the plugin
 - Configure the API URL in settings after setting up your sync server
+- Go to core plugins
+- Enable sync
+- Connect to remote vault
 
 ## FAQ
 > Why is this not part of the community plugins?
@@ -24,6 +27,10 @@ All
 > I can't find the .obsidian directory
 
 It's hidden. You can configure your file app to show hidden files or use a terminal. For IOS, you might need to plug it into a computer, go to "Documents on iPhone", then `Obsidian/<your vault name>/.obsidian`. Then follow the installation instructions.
+
+> How to I get a remote vault onto multiple devices?
+
+You can make multiple local vaults which sync to the same remote vault. Simply create a new vault, repeat the instructions, and connect to the same remote vault.
 
 > Privacy?
 
