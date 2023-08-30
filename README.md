@@ -18,7 +18,7 @@ Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 ## FAQ
 > Why is this not part of the community plugins?
 
-A: This cuts into their profits since they charge $10/month for sync
+> > We plan to keep Obsidian Sync first-party for a simple reason: users expect Obsidian to take their data very seriously. When users choose Obsidian Sync, we want to make sure that they do not experience data loss or privacy issues that might stem from third-party code. Of course it helps us cover our development and maintenance costs as well, but we think this is important for the long term health of Obsidian since we are 100% user-supported, not funded by VCs/investors.
 
 > What platforms does this work on?
 
