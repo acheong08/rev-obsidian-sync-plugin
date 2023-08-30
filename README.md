@@ -16,23 +16,25 @@ Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 - Connect to remote vault
 
 ## FAQ
-> Why is this not part of the community plugins?
+> ### Why is this not part of the community plugins?
 
-> > We plan to keep Obsidian Sync first-party for a simple reason: users expect Obsidian to take their data very seriously. When users choose Obsidian Sync, we want to make sure that they do not experience data loss or privacy issues that might stem from third-party code. Of course it helps us cover our development and maintenance costs as well, but we think this is important for the long term health of Obsidian since we are 100% user-supported, not funded by VCs/investors.
+`
+We plan to keep Obsidian Sync first-party for a simple reason: users expect Obsidian to take their data very seriously. When users choose Obsidian Sync, we want to make sure that they do not experience data loss or privacy issues that might stem from third-party code. Of course it helps us cover our development and maintenance costs as well, but we think this is important for the long term health of Obsidian since we are 100% user-supported, not funded by VCs/investors.
+` - Obsidian Team
 
-> What platforms does this work on?
+> ### What platforms does this work on?
 
 All
 
-> I can't find the .obsidian directory
+> ### I can't find the .obsidian directory
 
 It's hidden. You can configure your file app to show hidden files or use a terminal. For IOS, you might need to plug it into a computer, go to "Documents on iPhone", then `Obsidian/<your vault name>/.obsidian`. Then follow the installation instructions.
 
-> How to I get a remote vault onto multiple devices?
+> ### How to I get a remote vault onto multiple devices?
 
 You can make multiple local vaults which sync to the same remote vault. Simply create a new vault, repeat the instructions, and connect to the same remote vault.
 
-> Privacy?
+> ### Privacy?
 
 The plugin is dead simple. No data collected. You can even run your sync server on the local network without access to the internet.
 
