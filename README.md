@@ -2,6 +2,9 @@
 
 Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 
+> [!WARNING]
+> This is BROKEN at versions `>= 1.4.5`. They don't like this
+
 ## Installation
 - `cd /path/to/vault/.obsidian`
 - `mkdir -p plugins/custom-sync-plugin && cd plugins/custom-sync-plugin`
