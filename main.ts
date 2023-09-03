@@ -42,7 +42,7 @@ export default class InterceptorPlugin extends Plugin {
 				return res(ctx.status(200), ctx.text("Hello world"));
 			})
 		);
-		this.worker.start();
+		await this.worker.start();
 
 		this.getInternalPluginInstance("sync").getHost = () => {
 			let url = this.origGetHost();
