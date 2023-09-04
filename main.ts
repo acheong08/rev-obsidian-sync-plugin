@@ -60,7 +60,7 @@ export default class InterceptorPlugin extends Plugin {
 			if(syncAPI) {
 				const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
 				const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
-				url = `${scheme}://${syncAPIWithoutScheme}/ws`;
+				url = `${scheme}://${syncAPIWithoutScheme}/ws.obsidian.md`;
 			}
 
 			console.log("Websocket URL:", url);

@@ -63,7 +63,7 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
       if (syncAPI) {
         const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
         const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
-        url = `${scheme}://${syncAPIWithoutScheme}/ws`;
+        url = `${scheme}://${syncAPIWithoutScheme}/ws.obsidian.md`;
       }
       console.log("Websocket URL:", url);
       return url;
