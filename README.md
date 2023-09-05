@@ -10,6 +10,8 @@ Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 - `mkdir -p plugins/custom-sync-plugin && cd plugins/custom-sync-plugin`
 - `wget https://github.com/acheong08/rev-obsidian-sync-plugin/raw/master/main.js https://github.com/acheong08/rev-obsidian-sync-plugin/raw/master/manifest.json`
 
+Alternatively, you can use https://github.com/TfTHacker/obsidian42-brat which can be found in the official community plugins list.
+
 ## Usage:
 - Go to community plugins
 - Enable the plugin
