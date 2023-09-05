@@ -5,7 +5,7 @@ import {
 	Setting,
 	PluginManifest,
 } from "obsidian";
-import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
+import type { BrowserWindow } from "electron";
 
 // Remember to rename these classes and interfaces!
 
@@ -19,7 +19,6 @@ const DEFAULT_SETTINGS: PluginSettings = {
 
 export default class InterceptorPlugin extends Plugin {
 	settings: PluginSettings;
-	interceptor: XMLHttpRequestInterceptor;
 	origGetHost: Function;
 
 	constructor(app: App, manifest: PluginManifest) {
@@ -36,45 +35,24 @@ export default class InterceptorPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		this.interceptor = new XMLHttpRequestInterceptor();
-		this.interceptor.apply();
-		this.interceptor.on("request", async ({ request, requestId }) => {
+		(<BrowserWindow>(<any>window).electronWindow).webContents.session.webRequest.onBeforeRequest({urls: ["https://api.obsidian.md/*"]}, async ({ url }, callback) => {
 			await this.loadSettings();
-			console.log(request.method, request.url);
-			let url = request.url;
 			// Replace api url with sync api url
-			if (request.url.startsWith("https://api.obsidian.md")) {
-				url = request.url.replace(
+			if (url.startsWith("https://api.obsidian.md")) {
+				url = url.replace(
 					"https://api.obsidian.md",
 					this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
 				);
-			}
-			if (request.url.startsWith("https://publish.obsidian.md")) {
-				url = request.url.replace(
+			} else if (url.startsWith("https://publish.obsidian.md")) {
+				url = url.replace(
 					"https://publish.obsidian.md",
 					this.settings.SyncAPI || "https://publish.obsidian.md"
 				);
 			}
 
-			// The body is a stream. Finish reading it first
-			let reader = request.body?.getReader();
-			if (reader) {
-				let result = await reader.read();
-				let body = result.value;
-				let response = await fetch(url, {
-					method: request.method,
-					headers: request.headers,
-					body: body,
-				});
-				// Remove headers
-				response.headers.forEach((_, key) => {
-					if (key != "content-type" && key != "content-length") {
-						request.headers.delete(key);
-					}
-				});
-				request.respondWith(response);
-			}
+			callback({ redirectURL: url });
 		});
+
 		this.getInternalPluginInstance("sync").getHost = () => {
 			let url = this.origGetHost();
 			const syncAPI = this.settings.SyncAPI;
@@ -82,7 +60,7 @@ export default class InterceptorPlugin extends Plugin {
 			if(syncAPI) {
 				const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
 				const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
-				url = `${scheme}://${syncAPIWithoutScheme}/ws`;
+				url = `${scheme}://${syncAPIWithoutScheme}/ws.obsidian.md`;
 			}
 
 			console.log("Websocket URL:", url);
@@ -94,9 +72,7 @@ export default class InterceptorPlugin extends Plugin {
 		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
-	onunload() {
-		this.interceptor.dispose();
-	}
+	onunload() {}
 
 	async loadSettings() {
 		this.settings = Object.assign(
