@@ -2,8 +2,8 @@
 
 Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 
-> [!WARNING]
-> This is BROKEN at versions `>= 1.4.5`. They don't like this
+> [!NOTE]
+> It now works on 1.4.5 curtesy of [@t3chguy](https://github.com/t3chguy). Thank you so much! 
 
 ## Installation
 - `cd /path/to/vault/.obsidian`
