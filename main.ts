@@ -4,6 +4,7 @@ import {
 	PluginSettingTab,
 	Setting,
 	PluginManifest,
+	Notice,
 } from "obsidian";
 import type { BrowserWindow } from "electron";
 
@@ -35,31 +36,46 @@ export default class InterceptorPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-		(<BrowserWindow>(<any>window).electronWindow).webContents.session.webRequest.onBeforeRequest({urls: ["https://api.obsidian.md/*"]}, async ({ url }, callback) => {
-			await this.loadSettings();
-			// Replace api url with sync api url
-			if (url.startsWith("https://api.obsidian.md")) {
-				url = url.replace(
-					"https://api.obsidian.md",
-					this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
-				);
-			} else if (url.startsWith("https://publish.obsidian.md")) {
-				url = url.replace(
-					"https://publish.obsidian.md",
-					this.settings.SyncAPI || "https://publish.obsidian.md"
-				);
-			}
+		// This adds a settings tab so the user can configure various aspects of the plugin
+		this.addSettingTab(new SettingsTab(this.app, this));
+		try {
+			(<BrowserWindow>(
+				(<any>window).electronWindow
+			)).webContents.session.webRequest.onBeforeRequest(
+				{ urls: ["https://api.obsidian.md/*"] },
+				async ({ url }, callback) => {
+					await this.loadSettings();
+					// Replace api url with sync api url
+					if (url.startsWith("https://api.obsidian.md")) {
+						url = url.replace(
+							"https://api.obsidian.md",
+							this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
+						);
+					} else if (url.startsWith("https://publish.obsidian.md")) {
+						url = url.replace(
+							"https://publish.obsidian.md",
+							this.settings.SyncAPI ||
+								"https://publish.obsidian.md"
+						);
+					}
 
-			callback({ redirectURL: url });
-		});
+					callback({ redirectURL: url });
+				}
+			);
+		} catch (e) {
+			new Notice("Failed to intercept requests. The error was: " + e);
+		}
 
 		this.getInternalPluginInstance("sync").getHost = () => {
 			let url = this.origGetHost();
 			const syncAPI = this.settings.SyncAPI;
 
-			if(syncAPI) {
+			if (syncAPI) {
 				const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
-				const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
+				const syncAPIWithoutScheme = syncAPI.replace(
+					/^https?:\/\//,
+					""
+				);
 				url = `${scheme}://${syncAPIWithoutScheme}/ws.obsidian.md`;
 			}
 
@@ -67,9 +83,6 @@ export default class InterceptorPlugin extends Plugin {
 
 			return url;
 		};
-
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {}

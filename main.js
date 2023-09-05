@@ -42,33 +42,43 @@ var InterceptorPlugin = class extends import_obsidian.Plugin {
   }
   async onload() {
     await this.loadSettings();
-    window.electronWindow.webContents.session.webRequest.onBeforeRequest({ urls: ["https://api.obsidian.md/*"] }, async ({ url }, callback) => {
-      await this.loadSettings();
-      if (url.startsWith("https://api.obsidian.md")) {
-        url = url.replace(
-          "https://api.obsidian.md",
-          this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
-        );
-      } else if (url.startsWith("https://publish.obsidian.md")) {
-        url = url.replace(
-          "https://publish.obsidian.md",
-          this.settings.SyncAPI || "https://publish.obsidian.md"
-        );
-      }
-      callback({ redirectURL: url });
-    });
+    this.addSettingTab(new SettingsTab(this.app, this));
+    try {
+      window.electronWindow.webContents.session.webRequest.onBeforeRequest(
+        { urls: ["https://api.obsidian.md/*"] },
+        async ({ url }, callback) => {
+          await this.loadSettings();
+          if (url.startsWith("https://api.obsidian.md")) {
+            url = url.replace(
+              "https://api.obsidian.md",
+              this.settings.SyncAPI || DEFAULT_SETTINGS.SyncAPI
+            );
+          } else if (url.startsWith("https://publish.obsidian.md")) {
+            url = url.replace(
+              "https://publish.obsidian.md",
+              this.settings.SyncAPI || "https://publish.obsidian.md"
+            );
+          }
+          callback({ redirectURL: url });
+        }
+      );
+    } catch (e) {
+      new import_obsidian.Notice("Failed to intercept requests. The error was: " + e);
+    }
     this.getInternalPluginInstance("sync").getHost = () => {
       let url = this.origGetHost();
       const syncAPI = this.settings.SyncAPI;
       if (syncAPI) {
         const scheme = syncAPI.startsWith("http:") ? "ws" : "wss";
-        const syncAPIWithoutScheme = syncAPI.replace(/^https?:\/\//, "");
+        const syncAPIWithoutScheme = syncAPI.replace(
+          /^https?:\/\//,
+          ""
+        );
         url = `${scheme}://${syncAPIWithoutScheme}/ws.obsidian.md`;
       }
       console.log("Websocket URL:", url);
       return url;
     };
-    this.addSettingTab(new SettingsTab(this.app, this));
   }
   onunload() {
   }
