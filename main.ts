@@ -6,7 +6,8 @@ import {
 	PluginManifest,
 	Notice,
 } from "obsidian";
-import type { BrowserWindow } from "electron";
+import { XMLHttpRequestInterceptor } from "@mswjs/interceptors/XMLHttpRequest";
+// import type { BrowserWindow } from "electron";
 
 // Remember to rename these classes and interfaces!
 
@@ -21,6 +22,7 @@ const DEFAULT_SETTINGS: PluginSettings = {
 export default class InterceptorPlugin extends Plugin {
 	settings: PluginSettings;
 	origGetHost: Function;
+	interceptor: XMLHttpRequestInterceptor;
 
 	constructor(app: App, manifest: PluginManifest) {
 		super(app, manifest);
@@ -36,13 +38,54 @@ export default class InterceptorPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+		this.interceptor = new XMLHttpRequestInterceptor();
+		this.interceptor.apply();
+		this.interceptor.on("request", async ({ request, requestId }) => {
+			await this.loadSettings();
+			console.log(request.method, request.url);
+			let url = request.url;
+			// Replace api url with sync api url
+			if (request.url.startsWith("https://api.obsidian.md")) {
+				url = request.url.replace(
+					"https://api.obsidian.md",
+					this.settings.SyncAPI
+				);
+			}
+			if (request.url.startsWith("https://publish.obsidian.md")) {
+				url = request.url.replace(
+					"https://publish.obsidian.md",
+					this.settings.SyncAPI
+				);
+			}
+			// The body is a stream. Finish reading it first
+			let reader = request.body?.getReader();
+			if (reader) {
+				let result = await reader.read();
+				let body = result.value;
+				let response = await fetch(url, {
+					method: request.method,
+					headers: request.headers,
+					body: body,
+				});
+				// Remove headers
+				response.headers.forEach((_, key) => {
+					if (key != "content-type" && key != "content-length") {
+						request.headers.delete(key);
+					}
+				});
+				request.respondWith(response);
+			}
+		});
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SettingsTab(this.app, this));
 		try {
-			(<BrowserWindow>(
-				(<any>window).electronWindow
-			)).webContents.session.webRequest.onBeforeRequest(
+			// (<BrowserWindow>(
+			(<any>window).electronWindow;
+			// )).
+			// @ts-ignore
+			window.electronWindow.webContents.session.webRequest.onBeforeRequest(
 				{ urls: ["https://api.obsidian.md/*"] },
+				// @ts-ignore
 				async ({ url }, callback) => {
 					await this.loadSettings();
 					// Replace api url with sync api url
@@ -85,7 +128,9 @@ export default class InterceptorPlugin extends Plugin {
 		};
 	}
 
-	onunload() {}
+	onunload() {
+		this.interceptor.dispose();
+	}
 
 	async loadSettings() {
 		this.settings = Object.assign(
