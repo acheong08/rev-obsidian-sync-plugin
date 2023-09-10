@@ -3,7 +3,8 @@
 Plugin to be used alongside https://github.com/acheong08/rev-obsidian-sync/
 
 > [!NOTE]
-> It now works on 1.4.5 curtesy of [@t3chguy](https://github.com/t3chguy). Thank you so much! 
+> It now works on 1.4.5 curtesy of [@t3chguy](https://github.com/t3chguy). Thank you so much!
+> It doesn't work on mobile devices (IOS and Android). This is intentional by the official Obsidian Team.
 
 ## Installation
 - `cd /path/to/vault/.obsidian`
@@ -29,11 +30,11 @@ We plan to keep Obsidian Sync first-party for a simple reason: users expect Obsi
 
 > ### What platforms does this work on?
 
-All
+Desktop: Linux, MacOS, Windows.
 
 > ### I can't find the .obsidian directory
 
-It's hidden. You can configure your file app to show hidden files or use a terminal. For IOS, you might need to plug it into a computer, go to "Documents on iPhone", then `Obsidian/<your vault name>/.obsidian`. Then follow the installation instructions.
+It's hidden. You can configure your file app to show hidden files or use a terminal.
 
 > ### How to I get a remote vault onto multiple devices?
 
